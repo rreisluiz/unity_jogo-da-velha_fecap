@@ -175,21 +175,24 @@ public class GameController : MonoBehaviour
 
     private void EndGame()
     {
-        foreach (Node node in validNodes)
+        if (validNodes != null)
         {
-            string quad;
-
-            if (node.objectType == 1)
+            foreach (Node node in validNodes)
             {
-                quad = "BlueQuad";
-            }
-            else
-            {
-                quad = "RedQuad";
-            }
+                string quad;
 
-            Material material = node.gameObject.transform.Find(quad).gameObject.GetComponent<Renderer>().material;
-            material.SetColor("_EmissionColor", Color.yellow);
+                if (node.objectType == 1)
+                {
+                    quad = "BlueQuad";
+                }
+                else
+                {
+                    quad = "RedQuad";
+                }
+
+                Material material = node.gameObject.transform.Find(quad).gameObject.GetComponent<Renderer>().material;
+                material.SetColor("_EmissionColor", Color.yellow);
+            }
         }
 
         Cursor.visible = false;
