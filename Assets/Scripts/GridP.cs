@@ -2,163 +2,116 @@ using UnityEngine;
 
 public class GridP : MonoBehaviour
 {
-    public Transform tile;
-    public Vector2 gridWorldSize;
-    public Vector2 cellSize;
+    public Transform estiloDaCelula;
+    public Vector2 tamanhoGrid;
+    public Vector2 tamanhoCelula;
     public LayerMask gridMask;
 
-    public Transform selectionTileBlue;
-    public Transform selectionTileRed;
+    public Transform estiloSelecaoJogadorAzul;
+    public Transform estiloSelecaoJogadorVermelho;
 
-    PlayersController playersController;
+    ControladorJogadores controladorJogadores;
 
     Node[,] grid;
 
-    public Node[,] GetNodeGrid()
+    public Node[,] ObterNodeGrid()
     {
         return grid;
     }
 
     private void Awake()
     {
-        grid = new Node[(int) gridWorldSize.x, (int) gridWorldSize.y];
+        grid = new Node[(int) tamanhoGrid.x, (int) tamanhoGrid.y];
     }
 
     private void Start()
     {
-        playersController = GameObject.Find("PlayersController").GetComponent<PlayersController>();
-        CreateGrid();
+        controladorJogadores = GameObject.Find("PlayersController").GetComponent<ControladorJogadores>();
+        IniciarGrid();
     }
 
-    void CreateGrid()
+    void IniciarGrid()
     {
-        Vector2 realGridSize = gridWorldSize * cellSize;
+        // Calcula o tamanho total do grid
+        Vector2 tamanhoRealGrid = tamanhoGrid * tamanhoCelula;
 
-        for (int x = 0; x < gridWorldSize.x; x++)
+        // Inicia laço de repetição de acordo com o eixo X
+        for (int x = 0; x < tamanhoGrid.x; x++)
         {
-            for (int z = 0; z < gridWorldSize.y; z++)
+            // Inicia laço de repetição de acordo com o eixo Y
+            for (int z = 0; z < tamanhoGrid.y; z++)
             {
-                float pointX = x * cellSize.x - ((realGridSize.x - cellSize.x) / 2);
-                float pointZ = z * cellSize.y - ((realGridSize.y - cellSize.y) / 2);
+                // Calcula as posições X e Y da celula a ser criada no mundo
+                float posicaoX = x * tamanhoCelula.x - ((tamanhoRealGrid.x - tamanhoCelula.x) / 2);
+                float posicaoZ = z * tamanhoCelula.y - ((tamanhoRealGrid.y - tamanhoCelula.y) / 2);
 
-                Vector3 worldPoint = new Vector3(pointX, 0.5f, pointZ);
+                // Armazena em um vetor de 3 posições
+                Vector3 posicaoMundo = new Vector3(posicaoX, 0.5f, posicaoZ);
+                
+                // Cria um novo objeto 
+                Node novoNode = new Node(posicaoMundo, new Vector2(x, z), false);
 
-                Node currentNode = new Node(worldPoint, new Vector2(x, z), false);
-
-                grid[x, z] = currentNode;
+                // Guarda o objeto na Matriz, na posição selecionada 
+                grid[x, z] = novoNode;
 
                 if (grid != null)
                 {
-                    SpawnTile(currentNode);
+                    // Cria nova célula no mundo
+                    CriarCelula(novoNode);
                 }
             }
         }
     }
 
-    private void SpawnTile(Node currentNode)
+    private void CriarCelula(Node node)
     {
-        if (currentNode != null)
+        if (node != null)
         {
-            GameObject newTile = (GameObject)Instantiate(tile.gameObject, currentNode.worldPosition, Quaternion.identity);
-            currentNode.gameObject = newTile;
-            newTile.transform.parent = GameObject.Find("GridTiles").transform;
+            GameObject novaCelula = (GameObject) Instantiate(estiloDaCelula.gameObject, node.posicaoMundo, Quaternion.identity);
+            node.gameObject = novaCelula;
+            novaCelula.transform.parent = GameObject.Find("GridTiles").transform;
         }
     }
 
-    public Node GetNodeFromWorldPosition(Vector3 worldPosition)
+    public Node ObterNodePelaPosicaoMundo(Vector3 posicaoMundo)
     {
-        float percentX = Mathf.Clamp01((worldPosition.x + (gridWorldSize.x * cellSize.x) / 2) / (gridWorldSize.x * cellSize.x));
-        float percentZ = Mathf.Clamp01((worldPosition.z + (gridWorldSize.y * cellSize.y) / 2) / (gridWorldSize.y * cellSize.y));
+        // Calcula posicão da celula de acordo com a posição no mundo selecionada
+        float porcentagemX = Mathf.Clamp01((posicaoMundo.x + (tamanhoGrid.x * tamanhoCelula.x) / 2) / (tamanhoGrid.x * tamanhoCelula.x));
+        float porcentagemY = Mathf.Clamp01((posicaoMundo.z + (tamanhoGrid.y * tamanhoCelula.y) / 2) / (tamanhoGrid.y * tamanhoCelula.y));
 
-        int x = Mathf.RoundToInt((gridWorldSize.x - 1) * percentX);
-        int y = Mathf.RoundToInt((gridWorldSize.y - 1) * percentZ);
+        int x = Mathf.RoundToInt((tamanhoGrid.x - 1) * porcentagemX);
+        int y = Mathf.RoundToInt((tamanhoGrid.y - 1) * porcentagemY);
 
+        // Acessa a matriz e retorna a celula selecionada
         return grid[x, y];
-    }
-
-
-    private void OnDrawGizmos()
-    {
-        //if (grid != null)
-        //{
-        //    Vector3 mousePos = Input.mousePosition;
-        //    mousePos.z = Camera.main.transform.position.z;
-
-        //    Vector3 dataPosition = new Vector3();
-
-        //    Ray ray = Camera.main.ScreenPointToRay(mousePos);
-
-        //    RaycastHit hitInfo;
-        //    bool isHit = Physics.Raycast(ray, out hitInfo, 1000, gridMask);
-
-        //    if (isHit)
-        //    {
-        //        dataPosition = hitInfo.transform.position;
-        //    }
-
-        //    foreach (Node node in grid)
-        //    {
-        //        if (isHit)
-        //        {
-        //            string quad;
-
-        //            if (playersController.currentPlayer == 1)
-        //            {
-        //                quad = "BlueQuad";
-        //            }
-        //            else
-        //            {
-        //                quad = "RedQuad";
-        //            }
-
-        //            if (GetNodeFromWorldPosition(dataPosition) == node)
-        //            {
-        //                Gizmos.color = (node.isOccupied) ? Color.red : Color.green;
-        //                Gizmos.DrawWireCube(node.worldPosition, new Vector3(cellSize.x - 0.1f, 0.05f, cellSize.y - 0.1f));
-
-        //                if (!node.isOccupied)
-        //                {
-        //                    node.gameObject.transform.Find(quad).gameObject.SetActive(true);
-        //                }
-        //            } 
-        //            else
-        //            {
-        //                if (!node.isOccupied)
-        //                {
-        //                    node.gameObject.transform.Find(quad).gameObject.SetActive(false);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
     }
 
     private void Update()
     {
         if (grid != null)
         {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = Camera.main.transform.position.z;
+            Vector3 posicaoMouse = Input.mousePosition;
+            posicaoMouse.z = Camera.main.transform.position.z;
 
-            Vector3 dataPosition = new Vector3();
+            Vector3 posicaoColisaoMouse = new Vector3();
 
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            Ray ray = Camera.main.ScreenPointToRay(posicaoMouse);
 
-            RaycastHit hitInfo;
-            bool isHit = Physics.Raycast(ray, out hitInfo, 1000, gridMask);
+            RaycastHit informacaoColisao;
+            bool colidiu = Physics.Raycast(ray, out informacaoColisao, 1000, gridMask);
 
-            if (isHit)
+            if (colidiu)
             {
-                dataPosition = hitInfo.transform.position;
+                posicaoColisaoMouse = informacaoColisao.transform.position;
             }
 
             foreach (Node node in grid)
             {
-                if (isHit)
+                if (colidiu)
                 {
                     string quad;
 
-                    if (playersController.currentPlayer == 1)
+                    if (controladorJogadores.jogadorAtual == 1)
                     {
                         quad = "BlueQuad";
                     }
@@ -167,16 +120,16 @@ public class GridP : MonoBehaviour
                         quad = "RedQuad";
                     }
 
-                    if (GetNodeFromWorldPosition(dataPosition) == node)
+                    if (ObterNodePelaPosicaoMundo(posicaoColisaoMouse) == node)
                     {
-                        if (!node.isOccupied)
+                        if (!node.estaOcupado)
                         {
                             node.gameObject.transform.Find(quad).gameObject.SetActive(true);
                         }
                     }
                     else
                     {
-                        if (!node.isOccupied)
+                        if (!node.estaOcupado)
                         {
                             node.gameObject.transform.Find(quad).gameObject.SetActive(false);
                         }

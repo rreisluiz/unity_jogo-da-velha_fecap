@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Node
 {
-    public bool isOccupied;
-    public Vector3 worldPosition;
-    public int objectType = -1;
+    public bool estaOcupado;
+    public Vector3 posicaoMundo;
+    public int tipoObjeto = -1;
 
     public GameObject gameObject;
 
-    public Vector2 index { get; set; }
+    public Vector2 posicaoMatriz { get; set; }
 
     public Node(Vector3 _worldPosition, Vector2 _objectIndex, bool _isOccupied) { 
-        worldPosition = _worldPosition;
-        index = _objectIndex;
-        isOccupied = _isOccupied;
+        posicaoMundo = _worldPosition;
+        posicaoMatriz = _objectIndex;
+        estaOcupado = _isOccupied;
     }
 }

@@ -256,7 +256,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
-  m_LocalPosition: {x: 0, y: 3.5, z: -2}
+  m_LocalPosition: {x: 0, y: 5, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -505,15 +505,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7635b9dfd9b4b9c40a92507aa22ce5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile: {fileID: 1626953848116486521, guid: 5456b76ae878718448ad659a0b1d0207, type: 3}
-  gridWorldSize: {x: 3, y: 3}
-  cellSize: {x: 1, y: 1}
+  estiloDaCelula: {fileID: 1626953848116486521, guid: 5456b76ae878718448ad659a0b1d0207,
+    type: 3}
+  tamanhoGrid: {x: 3, y: 3}
+  tamanhoCelula: {x: 1, y: 1}
   gridMask:
     serializedVersion: 2
     m_Bits: 1
-  selectionTileBlue: {fileID: 2211440766153730556, guid: d428c3da05c07d0438c8fe729274bf9d,
+  estiloSelecaoJogadorAzul: {fileID: 2211440766153730556, guid: d428c3da05c07d0438c8fe729274bf9d,
     type: 3}
-  selectionTileRed: {fileID: 9184965228776722198, guid: 5303361e9a0fca74fbbb161d13ad63ff,
+  estiloSelecaoJogadorVermelho: {fileID: 9184965228776722198, guid: 5303361e9a0fca74fbbb161d13ad63ff,
     type: 3}
 --- !u!1 &1022187685
 GameObject:
@@ -1146,11 +1147,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b419217a707ce8c41be438d3da10ef34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bluePlayerShape: {fileID: 7338683301318432698, guid: 360be78737549324095ce122c851f971,
+  estiloJogadorAzul: {fileID: 7338683301318432698, guid: 360be78737549324095ce122c851f971,
     type: 3}
-  redPlayerShape: {fileID: 7442094690368298784, guid: 2a23d281777c0984bb056a9abbeb02ed,
+  estiloJogadorVermelho: {fileID: 7442094690368298784, guid: 2a23d281777c0984bb056a9abbeb02ed,
     type: 3}
-  shapeLayer:
+  layerEstilo:
     serializedVersion: 2
     m_Bits: 1
 --- !u!1660057539 &9223372036854775807
